@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.1.3] - 2026-03-13
+
+- Banner polish: updated header spacing and added color styling for terminal output.
+
 ## [0.1.2] - 2026-03-13
 
 - Small banner polish: fixed typo in rotating diagnostic line.

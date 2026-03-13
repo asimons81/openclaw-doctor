@@ -1,4 +1,5 @@
 import process from 'node:process';
+import kleur from 'kleur';
 
 const BANNER_LINES = [
   'Checking for problems you probably already know about...',
@@ -32,9 +33,18 @@ function pickRandom<T>(arr: readonly T[]): T {
 }
 
 function showBanner(): void {
+  // Only apply colors if stdout is a TTY
+  const useColor = process.stdout.isTTY;
+
+  // Header with exact spacing: " O P E N C L A W  D O C T O R [+]"
+  // OPENCLAW in red, [+] with + in yellow
+  const headerLine = useColor
+    ? ' ' + kleur.red('O P E N C L A W') + '  ' + kleur.red('D O C T O R') + ' ' + kleur.yellow('[') + kleur.yellow().bold('+') + kleur.yellow(']')
+    : ' O P E N C L A W  D O C T O R [+]';
+
   const banner = [
     '======================================================',
-    ' O P E N C L A W D O C T O R [+]',
+    headerLine,
     '======================================================',
     '',
   ];
