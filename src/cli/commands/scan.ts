@@ -13,6 +13,7 @@ import {
   type OutputFormat,
 } from '../constants.js';
 import { CliError } from '../errors.js';
+import { showBanner, shouldShowBanner } from '../banner.js';
 
 interface ScanCliOpts {
   path?: string;
@@ -22,6 +23,7 @@ interface ScanCliOpts {
   minSeverity: Severity;
   verbose?: boolean;
   exitCode?: boolean;
+  noBanner?: boolean;
 }
 
 export function registerScanCommand(program: Command): void {
@@ -58,6 +60,7 @@ export function registerScanCommand(program: Command): void {
     )
     .option('--verbose', 'Show all checks including those that passed')
     .option('--exit-code', 'Exit with code 1 if any error or critical findings exist')
+    .option('--no-banner', 'Disable the startup banner')
     .addHelpText(
       'after',
       [
@@ -71,6 +74,11 @@ export function registerScanCommand(program: Command): void {
       ].join('\n'),
     )
     .action(async (positionalPath: string | undefined, opts: ScanCliOpts) => {
+      // Show banner for terminal output if not disabled
+      if (shouldShowBanner(opts.format, opts.noBanner ?? false)) {
+        showBanner();
+      }
+
       // Positional argument takes precedence over --path flag
       const inputPath = positionalPath ?? opts.path;
 
