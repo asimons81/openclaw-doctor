@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-03-13T06:00:00Z",
+  "overall": "pass",
+  "checks": [
+    { "name": "memory-dir", "level": "pass", "detail": "memory/ exists" },
+    { "name": "memory-md", "level": "pass", "detail": "MEMORY.md present" }
+  ],
+  "summary": { "pass": 2, "warn": 0, "fail": 0 }
+}

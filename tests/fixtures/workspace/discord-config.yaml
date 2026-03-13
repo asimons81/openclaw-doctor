@@ -1,0 +1,11 @@
+channels:
+  command-center: "111111111111111111"
+  system-alerts: "222222222222222222"
+
+agents:
+  main:
+    name: Ozzy
+    channel: "111111111111111111"
+  forge:
+    name: Forge
+    channel: "222222222222222222"

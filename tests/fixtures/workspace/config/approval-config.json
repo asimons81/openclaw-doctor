@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "approval_channel_id": "333333333333333333",
+  "authorized_user_id": "444444444444444444",
+  "reaction_mapping": {
+    "👍": "approve",
+    "👎": "reject"
+  },
+  "state_file": "/tmp/test-approval-requests.jsonl",
+  "expiry_hours": 72
+}

@@ -1,0 +1,31 @@
+{
+  "id": "on-this-day-image",
+  "name": "On This Day Image",
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 8 * * *",
+    "tz": "America/Chicago"
+  },
+  "agent": null,
+  "state": {
+    "consecutiveErrors": 0,
+    "lastRunStatus": null,
+    "lastRunAtMs": null,
+    "nextRunAtMs": null,
+    "lastStatus": null,
+    "lastDurationMs": 0,
+    "lastDelivered": false
+  },
+  "enabled": true,
+  "wakeMode": "now",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "Run the On This Day image generation workflow."
+  },
+  "sessionTarget": "isolated",
+  "delivery": {
+    "mode": "announce",
+    "channel": "discord"
+  },
+  "updatedAtMs": null
+}

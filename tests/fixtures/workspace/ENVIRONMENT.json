@@ -1,0 +1,9 @@
+{
+  "version": "1.0",
+  "workspace": {
+    "root": "__FIXTURE_ROOT__",
+    "memory": "__FIXTURE_ROOT__/memory",
+    "logs": "__FIXTURE_ROOT__/logs",
+    "skills": "__FIXTURE_ROOT__/skills"
+  }
+}
