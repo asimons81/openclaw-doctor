@@ -13,13 +13,13 @@ OpenClawDoctor+ is a read-only CLI that scans an OpenClaw workspace and turns th
 ## Install
 
 ```bash
-npm install -g openclaw-doctor
+npm install -g @tonysimons/openclaw-doctor
 ```
 
 One-off use without installing:
 
 ```bash
-npx openclaw-doctor scan
+npx @tonysimons/openclaw-doctor scan
 ```
 
 Requirements:
