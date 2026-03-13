@@ -1,6 +1,6 @@
 {
   "name": "@tonysimons/openclaw-doctor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Diagnostic CLI for OpenClaw workspaces — detect config drift, memory hygiene issues, cron failures, and missing operational guardrails before they cost you hours.",
   "type": "module",
   "license": "MIT",

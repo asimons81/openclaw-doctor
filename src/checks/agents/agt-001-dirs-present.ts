@@ -47,7 +47,8 @@ export const agt001: Check = {
       message: `${missing.length} agent memory director${missing.length === 1 ? 'y is' : 'ies are'} missing: ${missing.join(', ')}`,
       remediation: [
         'This is informational. Directories are created when agents first write memory.',
-        'Only treat this as a problem if those agents are expected to have already logged state.',
+        'Note: Some agents (main, sentinel, spark) use different output paths (workspace root, validation/, logs/) and do not require memory/agents/<id>/ directories.',
+        'Only treat this as a problem if those agents are expected to have already logged state to that path.',
       ],
       checkedAt: new Date().toISOString(),
       meta: { missingAgents: missing },

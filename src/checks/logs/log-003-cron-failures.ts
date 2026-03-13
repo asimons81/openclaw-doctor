@@ -45,6 +45,7 @@ export const log003: Check = {
       remediation: [
         `Investigate failing jobs: ${uniqueJobs.join(', ')}`,
         'Review logs/cron-failures.jsonl for error details.',
+        'Note: Failures involving external dependencies (e.g., ComfyUI, APIs, remote services) are often transient and may not require fixes.',
       ],
       checkedAt: new Date().toISOString(),
       meta: { count, jobs: uniqueJobs },

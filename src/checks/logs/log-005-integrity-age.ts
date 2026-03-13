@@ -88,7 +88,10 @@ export const log005: Check = {
         severity: 'warn',
         confidence: 'definite',
         message: `Memory integrity check reports WARN — ${summary.warn} warning(s)`,
-        remediation: ['Review logs/memory-integrity-latest.json for the specific warnings.'],
+        remediation: [
+          'Review logs/memory-integrity-latest.json for the specific warnings.',
+          'Note: Some warnings may be legacy checks (e.g., deprecated iCloud paths) and not indicate actual problems.',
+        ],
         checkedAt: new Date().toISOString(),
         meta: { overall, summary },
       };
