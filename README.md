@@ -1,10 +1,15 @@
-# OpenClawDoctor+
+# OpenClawDoctor+ v0.1
+
+> ⚠️ **v0.x — Early Release**: This is an early-stage tool. Expect breaking changes between minor releases. Semantic versioning applies after v1.0.
 
 OpenClaw workspaces fail in boring ways: a missing `SOUL.md`, a stale daily file, broken cron state, drift between `ENVIRONMENT.json` and the filesystem, or logs that quietly stopped proving anything useful.
 
-OpenClawDoctor+ is a read-only CLI that scans an OpenClaw workspace and turns those failure modes into a short, actionable report. It does not call the network, mutate the workspace, or try to auto-fix anything behind your back.
+OpenClawDoctor+ is a **read-only** diagnostic CLI that scans an OpenClaw workspace and turns those failure modes into a short, actionable report. By design, it never calls the network, never mutates your files, and never attempts auto-repair — what it finds is what it reports.
+
+**Security model**: Read-only by default. No workspace writes. No API dependencies. No external network calls. Runs entirely offline against local filesystem state.
 
 - 25 checks across 6 categories
+- **No network calls** — runs entirely offline, filesystem-only operation
 - Terminal output for humans
 - JSON output for scripts and CI
 - Markdown output for GitHub issues, PRs, and Discord threads
@@ -25,6 +30,10 @@ npx @tonysimons/openclaw-doctor scan
 Requirements:
 
 - Node.js 20+
+
+## Stability
+
+OpenClawDoctor+ follows semantic versioning. During the v0.x series, **breaking changes may occur between minor releases** (e.g., 0.1 → 0.2). After v1.0, the standard semantic versioning contract applies: patch for bugfixes, minor for new features, major for breaking changes.
 
 ## First Run
 
@@ -83,6 +92,18 @@ JSON output stays deterministic enough for scripting:
 ```bash
 openclaw-doctor scan --format json
 ```
+
+## Visual Examples
+
+For detailed visual examples of all output formats (terminal, JSON, markdown) including healthy and warn-heavy runs, see [docs/VISUAL_EXAMPLES.md](./docs/VISUAL_EXAMPLES.md).
+
+### Screenshots
+
+**Healthy system** (no issues):
+![Clean run](./artifacts/screenshots/clean-run/screenshot.png)
+
+**System with warnings** (findings detected):
+![Warn run](./artifacts/screenshots/warn-run/screenshot.png)
 
 ## Usage
 
@@ -178,6 +199,8 @@ Best for communication. The Markdown report is optimized for GitHub issues, PR c
 
 ## Check Reference
 
+For a complete inventory of all 25 checks with descriptions, severity levels, confidence models, and remediation guidance, see [docs/CHECK_INVENTORY.md](./docs/CHECK_INVENTORY.md).
+
 | ID | Name | Max Severity |
 |----|------|--------------|
 | `WS-001` | Workspace Root Exists | `critical` |
@@ -223,11 +246,15 @@ npm run verify
 npm run pack:dry-run
 ```
 
-Current test/build baseline:
+Current test/build baseline (v0.1.3):
 
-- TypeScript typecheck passes
-- Vitest suite passes
-- Production build passes
+| Check | Status |
+|-------|--------|
+| TypeScript typecheck | ✓ passes |
+| Production build | ✓ passes |
+| Node.js | v20+ (tested on v22) |
+
+**CI-ready**: Exit codes work as expected — use `--exit-code` to fail builds on critical findings.
 
 ## Contributing
 

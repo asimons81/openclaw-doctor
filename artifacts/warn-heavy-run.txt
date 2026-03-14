@@ -1,0 +1,26 @@
+OpenClawDoctor+  workspace scan
+Workspace /home/tony/.openclaw/workspace
+Scanned   2026-03-14T01:10:40.580Z
+Status    WARN  (4 findings across 25 executed checks)
+
+Logs (2)
+  [WARN]   LOG-005   Memory integrity check reports WARN — 1 warning(s)
+              → Review logs/memory-integrity-latest.json for the specific warnings.
+              → Note: Some warnings may be legacy checks (e.g., deprecated iCloud paths) and not indicate actual problems.
+  [INFO]   LOG-003   1 cron failure(s) in the last 24 hours across 1 job(s)
+              → Investigate failing jobs: on-this-day-5a61826b-dc8d-48e9-a8cc-0ab6133525ce
+              → Review logs/cron-failures.jsonl for error details.
+
+Agents (1)
+  [INFO]   AGT-001   3 agent memory directories are missing: main, sentinel, spark
+              confidence: possible
+              → This is informational. Directories are created when agents first write memory.
+              → Note: Some agents (main, sentinel, spark) use different output paths (workspace root, validation/, logs/) and do not require memory/agents/<id>/ directories.
+
+Memory (1)
+  [INFO]   MEM-003   No daily memory file for today (2026-03-14); yesterday's exists
+              confidence: probable
+              → Create memory/2026-03-14.md with the morning briefing.
+
+────────────────────────────────────────────────────────────
+Overall: WARN  │  0 critical · 0 error · 1 warn · 3 info  │  21 passed · 0 skipped · 25 total
