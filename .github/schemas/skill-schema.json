@@ -22,7 +22,7 @@
       "type": "string",
       "description": "One-sentence description of what the skill does.",
       "minLength": 10,
-      "maxLength": 500
+      "maxLength": 1000
     },
     "version": {
       "type": "string",
@@ -48,21 +48,21 @@
       "type": "array",
       "description": "List of trigger conditions for this skill.",
       "items": {
-        "type": "object",
         "oneOf": [
           {
+            "type": "object",
             "description": "Scheduled trigger via cron expression",
             "properties": {
               "scheduled": {
                 "type": "string",
-                "description": "Cron expression. Must be valid 5-field cron.",
-                "pattern": "^(\\S+\\s+){4}\\S+$"
+                "description": "Cron expression. Must be valid 5-field cron. May contain a trailing parenthetical note (e.g. '0 6,18 * * * (note)')."
               }
             },
             "required": ["scheduled"],
             "additionalProperties": false
           },
           {
+            "type": "object",
             "description": "Manual trigger via keyword",
             "properties": {
               "manual": {
@@ -73,6 +73,11 @@
             },
             "required": ["manual"],
             "additionalProperties": false
+          },
+          {
+            "type": "string",
+            "description": "Plain string as shorthand for a manual trigger.",
+            "pattern": "^[a-z][a-z0-9 _-]+$"
           }
         ]
       }
@@ -158,8 +163,7 @@
     }
   },
   "additionalProperties": {
-    "type": "object",
-    "description": "Top-level metadata blocks are allowed.",
-    "additionalProperties": true
+    "type": ["object", "array", "string", "boolean", "null"],
+    "description": "Additional top-level fields (skills, related_skills, etc.) are allowed."
   }
 }
