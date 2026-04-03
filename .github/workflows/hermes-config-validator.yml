@@ -1,0 +1,115 @@
+name: Hermes Config Validator
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/hermes-config-validator.yml'
+      - '.hermes/skills/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/hermes-config-validator.yml'
+      - '.hermes/skills/**'
+
+jobs:
+  validate-hermes-skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pyyaml jsonschema croniter
+
+      - name: Get schema
+        run: |
+          # Schema lives alongside this workflow
+          SCHEMA_PATH=".github/schemas/skill-schema.json"
+          if [ ! -f "$SCHEMA_PATH" ]; then
+            echo "ERROR: Schema not found at $SCHEMA_PATH"
+            exit 1
+          fi
+          echo "SCHEMA_PATH=$SCHEMA_PATH" >> $GITHUB_ENV
+
+      - name: Find SKILL.md files
+        run: |
+          find . -name "SKILL.md" -not -path "./node_modules/*" > skill_files.txt
+          echo "Found $(wc -l < skill_files.txt) SKILL.md file(s)"
+          cat skill_files.txt
+
+      - name: Validate each skill
+        run: |
+          ERROR_COUNT=0
+          while IFS= read -r f; do
+            echo ""
+            echo "=== Validating: $f ==="
+            python3 -c "
+import sys, json, re, yaml, argparse
+from pathlib import Path
+
+SCHEMA = json.loads(Path('$SCHEMA_PATH').read_text())
+
+def extract_frontmatter(content):
+    m = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
+    if not m: return {}
+    return yaml.safe_load(m.group(1)) or {}
+
+def validate(path):
+    errors = []
+    data = extract_frontmatter(Path(path).read_text())
+    if not data: return ['No YAML frontmatter']
+    if not data.get('name'): errors.append('Missing: name')
+    if not data.get('description'): errors.append('Missing: description')
+    if data.get('description') and len(data['description']) < 10:
+        errors.append('description too short (<10 chars)')
+    v = data.get('version','')
+    if v and not re.match(r'^\d+\.\d+(\.\d+)?(-[a-zA-Z0-9.]+)?$', v):
+        errors.append(f'Invalid version: {v}')
+    rs = data.get('readiness_status','')
+    if rs and rs not in {'ready','available','needs_setup','unavailable'}:
+        errors.append(f'Invalid readiness_status: {rs}')
+    for i, t in enumerate(data.get('triggers', [])):
+        if 'scheduled' in t:
+            try:
+                from croniter import croniter
+                croniter(t['scheduled'])
+            except Exception as e:
+                errors.append(f'Invalid cron triggers[{i}]: {e}')
+        elif 'manual' in t:
+            m = t['manual']
+            if not re.match(r'^[a-z][a-z0-9 _-]+$', m):
+                errors.append(f'Invalid manual trigger triggers[{i}]: {m}')
+    try:
+        import jsonschema
+        jsonschema.validate(data, SCHEMA)
+    except ImportError:
+        pass
+    except jsonschema.ValidationError as e:
+        errors.append(f'Schema: {e.message}')
+    except jsonschema.SchemaError as e:
+        errors.append(f'Schema error: {e.message}')
+    return errors
+
+errors = validate('$f')
+if errors:
+    for e in errors: print(f'  ERROR: {e}')
+    sys.exit(1)
+else:
+    print('  OK')
+sys.exit(0)
+" || ERROR_COUNT=$((ERROR_COUNT+1))
+          done < skill_files.txt
+
+          echo ""
+          echo "==="
+          if [ $ERROR_COUNT -gt 0 ]; then
+            echo "FAIL: $ERROR_COUNT file(s) had errors"
+            exit 1
+          else
+            echo "PASS: All skills validated"
+          fi

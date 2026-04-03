@@ -1,0 +1,165 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://tonyreviewsthings.com/hermes/skill-schema.json",
+  "title": "Hermes Skill Schema",
+  "description": "JSON Schema for validating Hermes skill YAML frontmatter in SKILL.md files",
+  "type": "object",
+  "required": ["name", "description"],
+  "additionalProperties": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Unique skill identifier. Lowercase, hyphens/underscores only.",
+      "pattern": "^[a-z][a-z0-9_-]*$",
+      "examples": ["subconscious", "ollama-docs-watcher", "github-pr-workflow"]
+    },
+    "category": {
+      "type": "string",
+      "description": "Skill category for organization.",
+      "examples": ["research", "productivity", "mlops", "devops"]
+    },
+    "description": {
+      "type": "string",
+      "description": "One-sentence description of what the skill does.",
+      "minLength": 10,
+      "maxLength": 500
+    },
+    "version": {
+      "type": "string",
+      "description": "Semantic version string.",
+      "pattern": "^\\d+\\.\\d+(\\.\\d+)?(-[a-zA-Z0-9.]+)?$"
+    },
+    "author": {
+      "type": "string",
+      "description": "Skill author name or organization."
+    },
+    "license": {
+      "type": "string",
+      "description": "License identifier.",
+      "examples": ["MIT", "Apache-2.0", "private", "AGPL-3.0"]
+    },
+    "dependencies": {
+      "type": "array",
+      "description": "Required dependencies or skill prerequisites.",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "triggers": {
+      "type": "array",
+      "description": "List of trigger conditions for this skill.",
+      "items": {
+        "type": "object",
+        "oneOf": [
+          {
+            "description": "Scheduled trigger via cron expression",
+            "properties": {
+              "scheduled": {
+                "type": "string",
+                "description": "Cron expression. Must be valid 5-field cron.",
+                "pattern": "^(\\S+\\s+){4}\\S+$"
+              }
+            },
+            "required": ["scheduled"],
+            "additionalProperties": false
+          },
+          {
+            "description": "Manual trigger via keyword",
+            "properties": {
+              "manual": {
+                "type": "string",
+                "description": "Keyword that triggers this skill manually.",
+                "pattern": "^[a-z][a-z0-9 _-]+$"
+              }
+            },
+            "required": ["manual"],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "required_environment_variables": {
+      "type": "array",
+      "description": "Environment variables that must be set for this skill to function.",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "required_commands": {
+      "type": "array",
+      "description": "CLI commands that must be available in PATH.",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "missing_required_environment_variables": {
+      "type": "array",
+      "description": "Environment variables detected as missing at load time.",
+      "items": { "type": "string" }
+    },
+    "missing_credential_files": {
+      "type": "array",
+      "description": "Credential files detected as missing at load time.",
+      "items": { "type": "string" }
+    },
+    "missing_required_commands": {
+      "type": "array",
+      "description": "Commands detected as missing at load time.",
+      "items": { "type": "string" }
+    },
+    "setup_needed": {
+      "type": "boolean",
+      "description": "Whether setup steps are required before the skill is operational."
+    },
+    "setup_skipped": {
+      "type": "boolean",
+      "description": "Whether setup has been intentionally skipped."
+    },
+    "readiness_status": {
+      "type": "string",
+      "enum": ["ready", "available", "needs_setup", "unavailable"],
+      "description": "Current operational readiness of the skill."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "hermes": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "tags": {
+              "type": "array",
+              "description": "Classification tags for the skill.",
+              "items": { "type": "string" },
+              "uniqueItems": true
+            },
+            "homepage": {
+              "type": "string",
+              "format": "uri",
+              "description": "URL to the skill or project homepage."
+            },
+            "local_path": {
+              "type": "string",
+              "description": "Local filesystem path relevant to this skill.",
+              "pattern": "^[/~]"
+            },
+            "git_remote": {
+              "type": "string",
+              "format": "uri",
+              "description": "Git remote URL for the project."
+            },
+            "related_skills": {
+              "type": "array",
+              "description": "Skills related to or dependent on this skill.",
+              "items": { "type": "string" },
+              "uniqueItems": true
+            }
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": {
+    "type": "object",
+    "description": "Top-level metadata blocks are allowed.",
+    "additionalProperties": true
+  }
+}
